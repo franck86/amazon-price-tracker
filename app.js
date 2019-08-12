@@ -5,8 +5,8 @@ var cheerio = require('cheerio');
 
 // Variables
 var asin, price, pb_token;
-var amzn_url = 'http://www.amazon.com/dp/';
-var span_id = '#actualPriceValue';
+var amzn_url = 'http://www.amazon.it/dp/';
+var span_id = '#priceblock_ourprice';
 var check_interval = 60000;
 
 var schema = {
@@ -20,37 +20,41 @@ var schema = {
 			description: 'Enter the desired price (USD)',
 			type: 'number',
 			required: true
-		},
+		}
+		/*,
 		pb_token: {
 			description: 'Enter your PushBullet token',
 			type: 'string',
 			required: true,
 			hidden: true
-		}
+		}*/
 	}
 };
 
-prompt.start();
+amzn_url = amzn_url + 'B079N9LNQG';
+price = 30;
+
+/*prompt.start();
 
 prompt.get(schema, function (error, result) {
 	if (!error) {
 		asin = result.asin;
 		price = result.price;
-		pb_token = result.pb_token;
+		//pb_token = result.pb_token;
 
 		amzn_url += asin;
 
 		checkPrice();
 	}
 });
-
+*/
 function checkPrice() {
 	request(amzn_url, function(error, response, body) {
 		if (!error && response.statusCode == 200) {
 			var $ = cheerio.load(body);
 
 			var list_price = $(span_id).text();
-			var stripped_price = list_price.replace('$', '').replace(',', '');
+			var stripped_price = parseFloat(list_price.replace('€', ''));
 
 			if (stripped_price <= price) {
 				sendPush();
@@ -65,11 +69,16 @@ function checkPrice() {
 }
 
 function sendPush() {
-	var pusher = new pb(pb_token);
+	
+	console.log("Amazon Price Watc => A product you are watching has dropped in price: " + amzn_url);
+	
+	/*var pusher = new pb(pb_token);
 
 	pusher.note(null, "Amazon Price Watch", "A product you are watching has dropped in price: " + amzn_url, function(error, response) {
 		if (!error) {
 			process.exit();
 		}
-	});
+	});*/
 }
+
+checkPrice();
