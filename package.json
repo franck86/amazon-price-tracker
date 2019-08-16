@@ -10,9 +10,15 @@
   "author": "Sebastian Marulanda",
   "license": "ISC",
   "dependencies": {
-    "request": "*",
-    "prompt": "*",
+    "amazon-products": "0.0.9",
+    "body-parser": "1.15.0",
     "cheerio": "*",
-    "pushbullet": "*"
+    "chokidar": "^3.0.2",
+    "express": "^4.16.4",
+    "node-url-shortener": "^1.0.1",
+    "prompt": "*",
+    "pushbullet": "*",
+    "request": "*",
+    "telegraf": "3.29.0"
   }
 }
