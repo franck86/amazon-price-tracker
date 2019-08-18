@@ -11,7 +11,7 @@ const MongoClient 	= require('mongodb').MongoClient;
 
 const TELEGRAF		= require('telegraf');
 const TOKEN_BOT		= '902859650:AAHL6K4MlPAh9iAWVOH2DZlRvjKgZ5XZDu4';
-const dbURI    		= 'mongodb://localhost:27017/ecommerce';
+const dbURI    		= 'mongodb://127.0.0.1:27017/ecommerce';
 
 const CHANNEL_ID  = -1001240502570;
 const MASTER_ID   = 973946580;
