@@ -11,8 +11,8 @@ const MongoClient 	= require('mongodb').MongoClient;
 
 const TELEGRAF		= require('telegraf');
 const TOKEN_BOT		= '902859650:AAHL6K4MlPAh9iAWVOH2DZlRvjKgZ5XZDu4';
-const mongoUrl    		= 'mongodb://admin:qwebnm198256@127.0.0.1';
-//const mongoUrl    		= 'mongodb://admin:qwebnm198256@185.242.180.199';
+//const mongoUrl    		= 'mongodb://admin:qwebnm198256@127.0.0.1';
+const mongoUrl    		= 'mongodb://admin:qwebnm198256@185.242.180.199';
 const dbName = 'ecommerce';
 
 // Create a new MongoClient
@@ -31,7 +31,7 @@ client.connect(function(err, client) {
 		return console.log(JSON.stringify(err));
 	}
 
-	console.log('CONNESSIONE OK!!');
+	console.log('... Connessione al DB Mongo OK ...');
 	const db = client.db(dbName);
 
 	try {
@@ -43,12 +43,12 @@ client.connect(function(err, client) {
 						var $ = cheerio.load(body);
 						var title 			= $('#titleSection #productTitle').text().trim();
 						var previewImage 	= $('#landingImage')[0].attribs['data-old-hires'];
-						var asin 			= $('#cerberus-data-metrics').length ? $('#cerberus-data-metrics')[0]['attribs']['data-asin'] : false;
+						var asin 			= $('input#ASIN').length ? $('input#ASIN').attr('value') : false;
 						
 						if(!asin){
 							reject({message: 'ASIN NON RECUPERATO!!'});
 						}
-						
+
 						var stars			= $('#averageCustomerReviews .a-icon-star').text();
 						stars = parseInt(stars.split(' ')[0]);
 						
@@ -63,9 +63,8 @@ client.connect(function(err, client) {
 								reject();
 							}
 							else{
-								var currentDate = MOMENT().tz('Europe/Rome').format('DD-MM-YYYY');
+								var currentDate = MOMENT().tz('Europe/Rome').format('DD-MM-YYYY HH:mm');
 								resolve({
-									_id			: asin + '_' + currentDate,
 									title		: title,
 									stars		: stars,
 									asin		: asin,
@@ -115,12 +114,12 @@ client.connect(function(err, client) {
 	  
 		var pushNewProductInDB = (product) => {
 			var promise = new Promise((resolve, reject) => {
-				db.collection('item').insertOne(product).then(() => {
+				db.collection('products').insertOne(product).then(() => {
 					console.log('INSERITO NEL DB!!')
 					resolve();
 				})
 				.catch((e) => {
-					console.log('NON INSERITO NEL DB!! ' + JSON.stringify(e))
+					console.log(`NON INSERITO NEL DB : ${e.errmsg}`)
 					reject();
 				});
 			});
@@ -162,14 +161,17 @@ client.connect(function(err, client) {
 								});
 							}
 							else{
-								TELEGRAM.sendMessage(MASTER_ID, `URL AFFILIAZIONE NON RECUPERATO Post ${path} !!`, { parse_mode : 'html' });
+								TELEGRAM.sendMessage(MASTER_ID, `NON PUBBLICATO : MIO URL DI AFFILIAZIONE NON PRESENTE NEL Post ${path} !!`, { parse_mode : 'html' });
+								removeFile(path);
 							}
 						}
 						else{
-							TELEGRAM.sendMessage(MASTER_ID, `Post ${path} contains NO AMAZON URL!!`, { parse_mode : 'html' });
+							TELEGRAM.sendMessage(MASTER_ID, `NON PUBBLICATO : POST ORIGINALE NON CONTIENE UN AMAZON URL ${path}!!`, { parse_mode : 'html' });
+							removeFile(path);
 						}
 					} else {
-						TELEGRAM.sendMessage(MASTER_ID, `ERRORE lettura file del Post ${path}!!\n${JSON.stringify(err)}`, { parse_mode : 'html' });
+						TELEGRAM.sendMessage(MASTER_ID, `ERRORE LETTURA FILE DEL POST ${path}!!\n${JSON.stringify(err)}`, { parse_mode : 'html' });
+						removeFile(path);
 					}
 				});
 			});
