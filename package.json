@@ -17,7 +17,7 @@
     "express": "^4.16.4",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
-    "mongodb": "^2.2.26",
+    "mongodb": "^3.2.6",
     "node-url-shortener": "^1.0.1",
     "normalize-text": "^0.5.0",
     "prompt": "*",
