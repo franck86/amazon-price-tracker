@@ -51,7 +51,7 @@ client.connect(function(err, client) {
 						var catSplit = category.replace(/\r?\n|\r/g, '').split('›');
 						category = normalize.normalizeWhitespaces(catSplit[0]);
 						
-						var affUrl = amzn_url + asin + '?tag=shockprice05-21';
+						var affUrl = amzn_url + asin + '?tag=scontishock0a-21';
 		
 						shortUrl.short(affUrl, function(err, shortUrl){
 							if(err){
