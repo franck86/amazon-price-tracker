@@ -27,8 +27,10 @@ try {
 			MongoClient.connect(dbURI, (err, db) => {
 				if (err) {
 					reject(err);
+					return console.log(JSON.stringify(err));
 				}
 			
+				console.log('CONNESSIONE OK!!');
 				resolve(db);
 			});
 		});
