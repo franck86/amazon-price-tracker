@@ -33,6 +33,7 @@ client.connect(function(err, client) {
 
 	console.log('... Connessione al DB Mongo OK ...');
 	const db = client.db(dbName);
+	db.collection('products').createIndex({"asin":1},{unique:true});
 
 	try {
 		var getMyAffiliationByURL = async (requestUrl) => {
