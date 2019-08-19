@@ -116,12 +116,18 @@ try {
 	var pushNewProductInDB = (product) => {
 		var promise = new Promise((resolve, reject) => {
 			connectToDatabase().then((db) => {
-				db.collection('item').insertOne(product).then(() => {
-					resolve();
-				})
-				.catch(() => {
-					reject();
-				});
+				try {
+					db.collection('item').insertOne(product).then(() => {
+						console.log('INSERITO NEL DB!!')
+						resolve();
+					})
+					.catch(() => {
+						console.log('NON INSERITO NEL DB!!')
+						reject();
+					});
+				} catch (error) {
+					console.log(JSON.stringify(error));
+				}
 			})
 			.catch((err) => {
 				reject();
@@ -151,6 +157,7 @@ try {
 							affiliation.tmpl = newTMPL;
 							affiliation.tmpl = affiliation.tmpl.replace(/\n/g, '<br/>').replace(/\t/g, '&ensp');
 							pushNewProductInDB(affiliation).then(() => {
+								console.log("STO PER INVIARE IL POST!!");
 								newTMPL = `[​​​​​​​​​​​](${affiliation.img_url})${newTMPL}\n\n[#${affiliation.category.trim().replace(/ /g, '')}]\n_ Publicato il ${affiliation.date} _`;
 								TELEGRAM.sendMessage(CHANNEL_ID, newTMPL, { parse_mode : 'markdown' }).then(() => {
 									TELEGRAM.sendMessage(MASTER_ID, `Post ${path} pubblicato!!`, { parse_mode : 'html' });
