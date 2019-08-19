@@ -66,7 +66,7 @@ client.connect(function(err, client) {
 									asin		: asin,
 									url 		: shortUrl ? shortUrl : affUrl,
 									img_url		: previewImage,	
-									category 	: category,
+									category 	: category ? category : 'Varie',
 									date	    : currentDate
 								});
 							}
