@@ -43,7 +43,12 @@ client.connect(function(err, client) {
 						var $ = cheerio.load(body);
 						var title 			= $('#titleSection #productTitle').text().trim();
 						var previewImage 	= $('#landingImage')[0].attribs['data-old-hires'];
-						var asin 			= $('#cerberus-data-metrics')[0]['attribs']['data-asin'];
+						var asin 			= $('#cerberus-data-metrics').length ? $('#cerberus-data-metrics')[0]['attribs']['data-asin'] : false;
+						
+						if(!asin){
+							reject({message: 'ASIN NON RECUPERATO!!'});
+						}
+						
 						var stars			= $('#averageCustomerReviews .a-icon-star').text();
 						stars = parseInt(stars.split(' ')[0]);
 						
